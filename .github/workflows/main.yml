@@ -10,10 +10,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout GitHub repo (FULL history)
+      - name: Checkout repo (full history)
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # 🔥 REQUIRED for Hugging Face
+          fetch-depth: 0
+          lfs: true
+
+      - name: Install Git LFS
+        run: |
+          git lfs install
 
       - name: Push to Hugging Face Space
         env:
@@ -23,7 +28,7 @@ jobs:
           git config --global user.name "github-actions"
 
           git remote remove hf || true
-
           git remote add hf https://gajey1995:$HF_TOKEN@huggingface.co/spaces/gajey1995/SampleHuggingFaceSpace
 
+          git lfs push hf main
           git push hf main --force
